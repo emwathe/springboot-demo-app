@@ -17,7 +17,7 @@
         <span th:text="${errorMessage}"></span>
     </div>
 
-    <form th:action="@{/api/payment/checkout}" method="post" class="needs-validation" novalidate>
+    <form th:action="@{/api/payment/checkout(basketId=${basketId}, totalAmount=${totalAmount})}" method="post" class="needs-validation" novalidate>
         <input type="hidden" name="basketId" th:value="${basketId}" />
         <input type="hidden" name="totalAmount" th:value="${totalAmount}" />
 

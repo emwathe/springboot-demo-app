@@ -144,8 +144,8 @@ public class ProductWebController {
         }
     }
 
-    @PostMapping("/api/payment/checkout")
-    public String processPayment(@RequestParam Long basketId,
+    @PostMapping("/api/payment/checkout/{basketId}")
+    public String processPayment(@PathVariable Long basketId,
                                 @RequestParam double totalAmount,
                                 @RequestParam String cardNumber,
                                 @RequestParam String cardHolderName,
