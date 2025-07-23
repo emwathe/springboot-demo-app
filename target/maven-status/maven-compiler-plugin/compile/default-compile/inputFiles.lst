@@ -7,6 +7,7 @@
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/controller/ProductWebController.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/entity/AppUser.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/entity/Product.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/exception/SimulationException.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/repository/AppUserRepository.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/repository/ProductRepository.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/service/AppUserService.java
