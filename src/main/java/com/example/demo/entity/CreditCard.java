@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.validation.annotation.*;
 
 @Entity
 @Table(name = "credit_cards")

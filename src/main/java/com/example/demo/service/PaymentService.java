@@ -5,7 +5,7 @@ import com.example.demo.repository.CreditCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
-import jakarta.validation.annotation.Validated;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
@@ -13,7 +13,7 @@ public class PaymentService {
     @Autowired
     private CreditCardRepository creditCardRepository;
 
-    public boolean validateCreditCard(@Valid CreditCard creditCard) {
+    public boolean validateCreditCard(@jakarta.validation.Valid CreditCard creditCard) {
         // Additional validation for card number using Luhn algorithm
         if (!isValidCreditCardNumber(creditCard.getCardNumber())) {
             throw new IllegalArgumentException("Invalid credit card number format");
