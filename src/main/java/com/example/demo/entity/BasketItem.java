@@ -52,6 +52,9 @@ public class BasketItem {
     }
 
     public double getTotalPrice() {
+        if (product == null || product.getPrice() == null) {
+            return 0.0;
+        }
         return product.getPrice() * quantity;
     }
 }
