@@ -2,8 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Basket;
 import com.example.demo.entity.BasketItem;
+import com.example.demo.entity.CreditCard;
 import com.example.demo.entity.Product;
 import com.example.demo.service.BasketService;
+import com.example.demo.service.PaymentService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.SalesLogger;
 import com.example.demo.exception.BasketException;
@@ -23,6 +25,9 @@ public class ProductWebController {
     
     @Autowired
     private SalesLogger salesLogger;
+    
+    @Autowired
+    private PaymentService paymentService;
 
     @GetMapping
     public String listProducts(@RequestParam(required = false) Long basketId, Model model) {
@@ -126,15 +131,48 @@ public class ProductWebController {
         try {
             Basket basket = basketService.getBasket(id);
             double total = basket.getTotalPrice();
+            if (basket.getItems().isEmpty()) {
+                model.addAttribute("errorMessage", "Basket is empty");
+                return "redirect:/products";
+            }
+            model.addAttribute("basketId", basket.getId());
+            model.addAttribute("totalAmount", total);
+            return "payment";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Basket not found");
+            return "redirect:/products";
+        }
+    }
+
+    @PostMapping("/api/payment/checkout")
+    public String processPayment(@RequestParam Long basketId,
+                                @RequestParam double totalAmount,
+                                @RequestParam String cardNumber,
+                                @RequestParam String cardHolderName,
+                                @RequestParam String expirationDate,
+                                @RequestParam String cvv,
+                                Model model) {
+        try {
+            CreditCard creditCard = new CreditCard();
+            creditCard.setCardNumber(cardNumber);
+            creditCard.setCardHolderName(cardHolderName);
+            creditCard.setExpirationDate(expirationDate);
+            creditCard.setCvv(cvv);
+
+            paymentService.validateCreditCard(creditCard);
+            paymentService.processPayment(creditCard, totalAmount);
+
+            Basket basket = basketService.getBasket(basketId);
             for (BasketItem item : basket.getItems()) {
                 salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
             }
-            model.addAttribute("successMessage", "Basket checked out successfully! Total: $" + total);
-            basketService.clearBasket(id);
+            basketService.clearBasket(basketId);
+
+            model.addAttribute("successMessage", "Payment successful! Total: $" + totalAmount);
             return "redirect:/products";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Basket not found or empty");
-            return "redirect:/products";
+            model.addAttribute("errorMessage", "Payment failed: " + e.getMessage());
+            return "redirect:/products/basket/" + basketId;
         }
     }
 }

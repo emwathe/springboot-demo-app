@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Information</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Payment Information</h2>
+    
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+        <span th:text="${successMessage}"></span>
+    </div>
+    
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <form th:action="@{/api/payment/checkout}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" name="basketId" th:value="${basketId}" />
+        <input type="hidden" name="totalAmount" th:value="${totalAmount}" />
+
+        <div class="mb-3">
+            <label for="cardNumber" class="form-label">Credit Card Number</label>
+            <input type="text" class="form-control" id="cardNumber" name="cardNumber" required
+                   pattern="^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$">
+            <div class="invalid-feedback">
+                Please enter a valid credit card number.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="cardHolderName" class="form-label">Card Holder Name</label>
+            <input type="text" class="form-control" id="cardHolderName" name="cardHolderName" required
+                   pattern=".{2,50}" title="Must be between 2 and 50 characters">
+            <div class="invalid-feedback">
+                Please enter your card holder name.
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="expirationDate" class="form-label">Expiration Date</label>
+                <input type="text" class="form-control" id="expirationDate" name="expirationDate" required
+                       placeholder="MM/YY" pattern="^(0[1-9]|1[0-2])/(\d{2})$">
+                <div class="invalid-feedback">
+                    Please enter a valid expiration date (MM/YY).
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="cvv" class="form-label">CVV</label>
+                <input type="text" class="form-control" id="cvv" name="cvv" required
+                       pattern="^\d{3}$">
+                <div class="invalid-feedback">
+                    Please enter a 3-digit CVV.
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <h4>Total Amount: <span th:text="${totalAmount} + ' USD'">$0.00</span></h4>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Complete Payment</button>
+        <a th:href="@{/products/basket/{id}(id=${basketId})}" class="btn btn-secondary">Back to Basket</a>
+    </form>
+</div>
+
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+</body>
+</html>
