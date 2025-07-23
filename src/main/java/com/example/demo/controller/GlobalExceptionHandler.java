@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
-import com.example.demo.exception.SimulationException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.BadSqlGrammarException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,12 +24,28 @@ public class GlobalExceptionHandler {
         return "error/404";
     }
 
-    @ExceptionHandler(SimulationException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleSimulationException(SimulationException ex, Model model) {
-        logger.error("Simulation error occurred: {}", ex.getMessage());
-        model.addAttribute("errorMessage", "A simulated error occurred: " + ex.getMessage());
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleDataIntegrityViolation(DataIntegrityViolationException ex, Model model) {
+        logger.error("Data integrity violation: {}", ex.getMessage());
+        model.addAttribute("errorMessage", "Database error: " + ex.getMessage());
         return "error/generic";
     }
 
+    @ExceptionHandler(BadSqlGrammarException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleBadSqlGrammar(BadSqlGrammarException ex, Model model) {
+        logger.error("SQL error: {}", ex.getMessage());
+        model.addAttribute("errorMessage", "Database error: Invalid SQL statement");
+        return "error/generic";
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleGenericException(Exception ex, Model model) {
+        logger.error("Unexpected error: {}", ex.getMessage(), ex);
+        model.addAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
+        return "error/generic";
+    }
+}
 }

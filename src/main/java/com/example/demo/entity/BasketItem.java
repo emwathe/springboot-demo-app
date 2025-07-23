@@ -3,12 +3,14 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "basket_items")
 public class BasketItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne
@@ -16,6 +18,10 @@ public class BasketItem {
     private Basket basket;
 
     private int quantity;
+
+    public BasketItem() {
+        this.quantity = 1;
+    }
 
     public Long getId() {
         return id;
