@@ -10,8 +10,7 @@ public class Basket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "basket_id")
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BasketItem> items = new ArrayList<>();
 
     public Long getId() {
@@ -24,10 +23,12 @@ public class Basket {
 
     public void addItem(BasketItem item) {
         items.add(item);
+        item.setBasket(this); // Set the bidirectional relationship
     }
 
     public void removeItem(BasketItem item) {
         items.remove(item);
+        item.setBasket(null); // Remove the relationship
     }
 
     public double getTotalPrice() {

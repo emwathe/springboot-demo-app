@@ -6,6 +6,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.repository.BasketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,12 +21,14 @@ public class BasketService {
     @Autowired
     private ProductService productService;
 
+    @Transactional
     public Basket createBasket() {
         Basket basket = new Basket();
         basket = basketRepository.save(basket);
         return basket;
     }
 
+    @Transactional
     public Basket addItemToBasket(Long basketId, Long productId, int quantity) {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
@@ -42,6 +45,7 @@ public class BasketService {
         return basketRepository.save(basket);
     }
 
+    @Transactional
     public void removeItemFromBasket(Long basketId, Long itemId) {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
@@ -50,11 +54,13 @@ public class BasketService {
         basketRepository.save(basket);
     }
 
+    @Transactional(readOnly = true)
     public Basket getBasket(Long basketId) {
         return basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
     }
 
+    @Transactional
     public void clearBasket(Long basketId) {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
