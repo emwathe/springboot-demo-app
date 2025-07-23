@@ -78,7 +78,7 @@ public class ProductWebController {
     @GetMapping("/add-to-basket/{productId}")
     public String addToBasket(@PathVariable Long productId, @RequestParam int quantity, @RequestParam(required = false) Long basketId, Model model) {
         if (basketId == null) {
-            basketId = basketService.createBasket().getId();
+            basketId = basketService.getOrCreateBasket().getId();
         }
         basketService.addItemToBasket(basketId, productId, quantity);
         model.addAttribute("basketId", basketId);

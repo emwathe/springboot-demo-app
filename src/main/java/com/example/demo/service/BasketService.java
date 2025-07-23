@@ -28,6 +28,17 @@ public class BasketService {
     }
 
     @Transactional
+    public Basket getOrCreateBasket() {
+        // First try to find an existing basket
+        Basket basket = basketRepository.findFirstByOrderByCreatedDateDesc();
+        if (basket == null) {
+            // If none exists, create a new one
+            basket = createBasket();
+        }
+        return basket;
+    }
+
+    @Transactional
     public Basket addItemToBasket(Long basketId, Long productId, int quantity) {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
@@ -35,22 +46,34 @@ public class BasketService {
         Product product = productService.getProductById(productId)
                 .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND));
 
-        BasketItem item = new BasketItem();
-        item.setProduct(product);
-        item.setQuantity(quantity);
-        item.setBasket(basket); // Set the basket reference
-        basket.addItem(item);
+        // Check if item already exists in basket
+        BasketItem existingItem = basket.getItems().stream()
+                .filter(i -> i.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        if (existingItem != null) {
+            // Update quantity if item already exists
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+        } else {
+            // Create new item if it doesn't exist
+            BasketItem item = new BasketItem();
+            item.setProduct(product);
+            item.setQuantity(quantity);
+            item.setBasket(basket);
+            basket.addItem(item);
+        }
 
         return basketRepository.save(basket);
     }
 
     @Transactional
-    public void removeItemFromBasket(Long basketId, Long itemId) {
+    public Basket removeItemFromBasket(Long basketId, Long itemId) {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
 
         basket.getItems().removeIf(item -> item.getId().equals(itemId));
-        basketRepository.save(basket);
+        return basketRepository.save(basket);
     }
 
     @Transactional(readOnly = true)
@@ -60,11 +83,11 @@ public class BasketService {
     }
 
     @Transactional
-    public void clearBasket(Long basketId) {
+    public Basket clearBasket(Long basketId) {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
 
         basket.getItems().clear();
-        basketRepository.save(basket);
+        return basketRepository.save(basket);
     }
 }
