@@ -50,4 +50,12 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorMessage", "There was a problem with our database. Please try again later.");
         return GENERIC_ERROR_VIEW;
     }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleGenericException(Exception ex, Model model) {
+        logger.error("Unexpected error: {}", ex.getMessage(), ex);
+        model.addAttribute("errorMessage", "Something went wrong. Please try again later.");
+        return GENERIC_ERROR_VIEW;
+    }
 }
