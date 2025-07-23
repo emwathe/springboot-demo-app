@@ -15,7 +15,7 @@ public class Basket {
     private List<BasketItem> items = new ArrayList<>();
 
     public Basket() {
-        items = new ArrayList<>();
+        // No need to initialize items again, it's already initialized at declaration
     }
 
     public Long getId() {

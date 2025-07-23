@@ -95,7 +95,7 @@ public class ProductWebController {
         return "redirect:/products?basketId=" + basketId;
     }
 
-    @GetMapping("/basket/{id}")
+    @GetMapping({"/basket/{id}", "/products/basket/{id}"})
     public String viewBasket(@PathVariable Long id, Model model) {
         try {
             Basket basket = basketService.getBasket(id);
