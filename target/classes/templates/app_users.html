@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>App Users</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>App Users</h2>
+    <a class="btn btn-primary mb-2" th:href="@{/users/add}">Add App User</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td>
+                <a th:href="@{'/users/edit/' + ${user.id}}" class="btn btn-sm btn-warning">Edit App User</a>
+                <a th:href="@{'/users/delete/' + ${user.id}}" class="btn btn-sm btn-danger">Delete App User</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/products" class="btn btn-secondary">View Products</a>
+</div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

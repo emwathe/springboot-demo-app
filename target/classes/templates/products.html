@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Products</h2>
+    <a class="btn btn-primary mb-2" th:href="@{/products/add}">Add Product</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.price}"></td>
+            <td>
+                <a th:href="@{'/products/edit/' + ${product.id}}" class="btn btn-sm btn-warning">Edit</a>
+                <a th:href="@{'/products/delete/' + ${product.id}}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/users" class="btn btn-secondary">View Users</a>
+</div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

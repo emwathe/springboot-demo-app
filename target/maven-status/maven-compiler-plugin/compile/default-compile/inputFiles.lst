@@ -1,0 +1,13 @@
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/SpringbootDemoAppApplication.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/controller/AppUserRestController.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/controller/AppUserWebController.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/controller/ErrorSimulationController.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/controller/GlobalExceptionHandler.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/controller/ProductRestController.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/controller/ProductWebController.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/entity/AppUser.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/entity/Product.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/repository/AppUserRepository.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/repository/ProductRepository.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/service/AppUserService.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/service/ProductService.java
