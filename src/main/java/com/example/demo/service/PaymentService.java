@@ -66,13 +66,13 @@ public class PaymentService {
         // Process payment
         creditCardRepository.save(creditCard);
 
-        // Log sales
+        // Get basket and log sales
         Basket basket = basketService.getBasket(basketId);
         for (BasketItem item : basket.getItems()) {
             salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
         }
 
-        // Clear basket
+        // Clear basket - this will now delete the basket
         basketService.clearBasket(basketId);
     }
 }

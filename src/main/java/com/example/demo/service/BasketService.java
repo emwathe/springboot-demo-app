@@ -85,11 +85,12 @@ public class BasketService {
     }
 
     @Transactional
-    public Basket clearBasket(Long basketId) {
+    public void clearBasket(Long basketId) {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
 
+        // Clear items and then delete the basket
         basket.getItems().clear();
-        return basketRepository.save(basket);
+        basketRepository.delete(basket);
     }
 }
