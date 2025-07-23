@@ -21,7 +21,9 @@ public class BasketService {
     private ProductService productService;
 
     public Basket createBasket() {
-        return basketRepository.save(new Basket());
+        Basket basket = new Basket();
+        basket = basketRepository.save(basket);
+        return basket;
     }
 
     public Basket addItemToBasket(Long basketId, Long productId, int quantity) {
@@ -34,6 +36,7 @@ public class BasketService {
         BasketItem item = new BasketItem();
         item.setProduct(product);
         item.setQuantity(quantity);
+        item.setBasket(basket); // Set the basket reference
         basket.addItem(item);
 
         return basketRepository.save(basket);

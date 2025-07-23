@@ -96,9 +96,17 @@ public class ProductWebController {
 
     @GetMapping("/basket/{id}")
     public String viewBasket(@PathVariable Long id, Model model) {
-        Basket basket = basketService.getBasket(id);
-        model.addAttribute("basket", basket);
-        return "basket";
+        try {
+            Basket basket = basketService.getBasket(id);
+            model.addAttribute("basket", basket);
+            return "basket";
+        } catch (Exception e) {
+            // If basket doesn't exist, create a new one
+            Basket newBasket = basketService.createBasket();
+            model.addAttribute("basket", newBasket);
+            model.addAttribute("successMessage", "Created new basket");
+            return "redirect:/products?basketId=" + newBasket.getId();
+        }
     }
 
     @GetMapping("/clear-basket/{id}")
@@ -114,13 +122,18 @@ public class ProductWebController {
 
     @GetMapping("/checkout/{id}")
     public String checkoutBasket(@PathVariable Long id, Model model) {
-        Basket basket = basketService.getBasket(id);
-        double total = basket.getTotalPrice();
-        for (BasketItem item : basket.getItems()) {
-            salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
+        try {
+            Basket basket = basketService.getBasket(id);
+            double total = basket.getTotalPrice();
+            for (BasketItem item : basket.getItems()) {
+                salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
+            }
+            model.addAttribute("successMessage", "Basket checked out successfully! Total: $" + total);
+            basketService.clearBasket(id);
+            return "redirect:/products";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Basket not found or empty");
+            return "redirect:/products";
         }
-        model.addAttribute("successMessage", "Basket checked out successfully! Total: $" + total);
-        basketService.clearBasket(id);
-        return "redirect:/products";
     }
 }

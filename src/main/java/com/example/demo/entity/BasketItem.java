@@ -11,6 +11,10 @@ public class BasketItem {
     @ManyToOne
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "basket_id", nullable = false)
+    private Basket basket;
+
     private int quantity;
 
     public Long getId() {
@@ -23,6 +27,14 @@ public class BasketItem {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public Basket getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Basket basket) {
+        this.basket = basket;
     }
 
     public int getQuantity() {
