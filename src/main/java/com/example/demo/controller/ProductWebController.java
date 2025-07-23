@@ -26,8 +26,9 @@ public class ProductWebController {
     private SalesLogger salesLogger;
 
     @GetMapping
-    public String listProducts(Model model) {
+    public String listProducts(@RequestParam(required = false) Long basketId, Model model) {
         model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("basketId", basketId);
         return "products";
     }
 
