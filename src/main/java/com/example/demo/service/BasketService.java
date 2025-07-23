@@ -20,8 +20,13 @@ public class BasketService {
     @Autowired
     private ProductService productService;
     
-    @Autowired
-    private BasketService self;
+    private final BasketRepository basketRepository;
+    private final ProductService productService;
+
+    public BasketService(BasketRepository basketRepository, ProductService productService) {
+        this.basketRepository = basketRepository;
+        this.productService = productService;
+    }
 
     @Transactional
     public Basket createBasket() {
@@ -36,7 +41,7 @@ public class BasketService {
         Basket basket = basketRepository.findFirstByOrderByCreatedDateDesc();
         if (basket == null) {
             // If none exists, create a new one
-            basket = self.createBasket();
+            basket = createBasket();
         }
         return basket;
     }
