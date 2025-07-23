@@ -16,45 +16,55 @@
     </div>
     
     <div class="mb-3">
-        <a th:href="@{/products}?basketId=${basket.id}" class="btn btn-secondary">Back to Products</a>
+        <a th:href="@{/products}" class="btn btn-secondary">Back to Products</a>
     </div>
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Total Price</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${basket.items}">
-            <td th:text="${item.product.name}"></td>
-            <td>
-                <form th:action="@{/products/add-to-basket/{id}(id=${item.product.id})}?basketId=${basket.id}" method="get" class="d-inline">
-                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" max="10" class="form-control form-control-sm" style="width: 100px;">
-                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
-                </form>
-            </td>
-            <td th:text="${item.product.price}"></td>
-            <td th:text="${item.totalPrice}"></td>
-            <td>
-                <form th:action="@{/products/remove-from-basket/{id}(id=${item.id})}?basketId=${basket.id}" method="get" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="3" class="text-end"><strong>Total:</strong></td>
-            <td><strong th:text="${basket.totalPrice}"></strong></td>
-            <td></td>
-        </tr>
-        </tfoot>
-    </table>
+    <div th:if="${basket != null && !basket.items.isEmpty()}">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${basket.items}">
+                <td th:text="${item.product.name}"></td>
+                <td>
+                    <form th:action="@{/products/add-to-basket/{id}(id=${item.product.id})}" method="get" class="d-inline">
+                        <input type="hidden" name="basketId" th:value="${basket.id}" />
+                        <input type="number" name="quantity" th:value="${item.quantity}" min="1" max="10" class="form-control form-control-sm" style="width: 100px;">
+                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                    </form>
+                </td>
+                <td th:text="${item.product.price}"></td>
+                <td th:text="${item.totalPrice}"></td>
+                <td>
+                    <form th:action="@{/products/remove-from-basket/{id}(id=${item.id})}" method="get" class="d-inline">
+                        <input type="hidden" name="basketId" th:value="${basket.id}" />
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                <td><strong th:text="${basket.totalPrice}"></strong></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div th:if="${basket == null || basket.items.isEmpty()}">
+        <div class="alert alert-info">
+            Your basket is empty. <a th:href="@{/products}" class="alert-link">Add some items</a> to get started!
+        </div>
+    </div>
 
     <div class="mt-3">
         <a th:href="@{/products/checkout/{id}(id=${basket.id})}" class="btn btn-success">Checkout</a>

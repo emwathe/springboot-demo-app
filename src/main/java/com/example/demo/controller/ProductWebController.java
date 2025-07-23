@@ -97,8 +97,13 @@ public class ProductWebController {
     public String viewBasket(@PathVariable Long id, Model model) {
         try {
             Basket basket = basketService.getBasket(id);
-            model.addAttribute("basket", basket);
-            return "basket";
+            if (basket != null) {
+                model.addAttribute("basket", basket);
+                return "basket";
+            } else {
+                model.addAttribute("errorMessage", "Basket not found");
+                return "redirect:/products";
+            }
         } catch (BasketException e) {
             model.addAttribute("errorMessage", "Basket not found");
             return "redirect:/products";
