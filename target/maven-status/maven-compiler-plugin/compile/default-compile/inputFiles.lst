@@ -9,6 +9,7 @@
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/entity/Basket.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/entity/BasketItem.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/entity/Product.java
+/Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/exception/BasketException.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/exception/SimulationException.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/repository/AppUserRepository.java
 /Users/danieledwinmwathe.ng/CascadeProjects/springboot-demo-app/src/main/java/com/example/demo/repository/BasketRepository.java

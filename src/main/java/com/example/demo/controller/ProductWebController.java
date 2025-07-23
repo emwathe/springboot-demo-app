@@ -6,6 +6,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.service.BasketService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.SalesLogger;
+import com.example.demo.exception.BasketException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -91,7 +92,7 @@ public class ProductWebController {
     public String removeFromBasket(@PathVariable Long itemId, @RequestParam Long basketId, Model model) {
         basketService.removeItemFromBasket(basketId, itemId);
         model.addAttribute("successMessage", "Product removed from basket");
-        return "redirect:/products/basket/" + basketId;
+        return "redirect:/products?basketId=" + basketId;
     }
 
     @GetMapping("/basket/{id}")
@@ -100,12 +101,9 @@ public class ProductWebController {
             Basket basket = basketService.getBasket(id);
             model.addAttribute("basket", basket);
             return "basket";
-        } catch (Exception e) {
-            // If basket doesn't exist, create a new one
-            Basket newBasket = basketService.createBasket();
-            model.addAttribute("basket", newBasket);
-            model.addAttribute("successMessage", "Created new basket");
-            return "redirect:/products?basketId=" + newBasket.getId();
+        } catch (BasketException e) {
+            model.addAttribute("errorMessage", "Basket not found");
+            return "redirect:/products";
         }
     }
 
