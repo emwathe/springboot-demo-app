@@ -90,7 +90,7 @@ public class ProductWebController {
     public String removeFromBasket(@PathVariable Long itemId, @RequestParam Long basketId, Model model) {
         basketService.removeItemFromBasket(basketId, itemId);
         model.addAttribute("successMessage", "Product removed from basket");
-        return "redirect:/products?basketId=" + basketId;
+        return "redirect:/products/basket/" + basketId;
     }
 
     @GetMapping("/basket/{id}")

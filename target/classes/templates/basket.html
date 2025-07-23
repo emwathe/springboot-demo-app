@@ -43,9 +43,9 @@
                 <td th:text="${item.product.price}"></td>
                 <td th:text="${item.totalPrice}"></td>
                 <td>
-                    <form th:action="@{/products/remove-from-basket/{id}(id=${item.id})}" method="get" class="d-inline">
+                    <form th:action="@{/products/remove-from-basket/{id}(id=${item.id})}" method="get" class="d-inline" id="removeForm${item.id}">
                         <input type="hidden" name="basketId" th:value="${basket.id}" />
-                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to remove this item?')">Remove</button>
                     </form>
                 </td>
             </tr>
