@@ -54,7 +54,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleGenericException(Exception ex, Model model) {
-        logger.error("Unexpected error: {}", ex.getMessage(), ex);
+        logger.error("Unexpected error occurred:", ex);
+        logger.error("Error message: {}", ex.getMessage());
+        logger.error("Error class: {}", ex.getClass().getName());
+        if (ex.getCause() != null) {
+            logger.error("Cause: {}", ex.getCause().getMessage());
+        }
         model.addAttribute("errorMessage", "Something went wrong. Please try again later.");
         return GENERIC_ERROR_VIEW;
     }
