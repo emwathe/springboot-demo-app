@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Basket;
+import com.example.demo.entity.BasketItem;
 import com.example.demo.entity.Product;
+import com.example.demo.service.BasketService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.SalesLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,9 @@ import java.util.Optional;
 public class ProductWebController {
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private BasketService basketService;
     
     @Autowired
     private SalesLogger salesLogger;
@@ -56,15 +62,47 @@ public class ProductWebController {
         return "redirect:/products";
     }
 
-    @GetMapping("/sell/{id}")
-    public String sellProduct(@PathVariable Long id, Model model) {
-        Optional<Product> product = productService.getProductById(id);
-        if (product.isPresent()) {
-            salesLogger.logSale(id, product.get().getName(), product.get().getPrice());
-            model.addAttribute("successMessage", "Product sold successfully!");
-        } else {
-            model.addAttribute("errorMessage", "Product not found");
+    @GetMapping("/add-to-basket/{productId}")
+    public String addToBasket(@PathVariable Long productId, @RequestParam int quantity, @RequestParam(required = false) Long basketId, Model model) {
+        if (basketId == null) {
+            basketId = basketService.createBasket().getId();
         }
+        basketService.addItemToBasket(basketId, productId, quantity);
+        model.addAttribute("basketId", basketId);
+        model.addAttribute("successMessage", "Product added to basket");
+        return "redirect:/products";
+    }
+
+    @GetMapping("/remove-from-basket/{itemId}")
+    public String removeFromBasket(@PathVariable Long itemId, @RequestParam Long basketId, Model model) {
+        basketService.removeItemFromBasket(basketId, itemId);
+        model.addAttribute("successMessage", "Product removed from basket");
+        return "redirect:/products/basket/" + basketId;
+    }
+
+    @GetMapping("/basket/{id}")
+    public String viewBasket(@PathVariable Long id, Model model) {
+        Basket basket = basketService.getBasket(id);
+        model.addAttribute("basket", basket);
+        return "basket";
+    }
+
+    @GetMapping("/clear-basket/{id}")
+    public String clearBasket(@PathVariable Long id, Model model) {
+        basketService.clearBasket(id);
+        model.addAttribute("successMessage", "Basket cleared successfully!");
+        return "redirect:/products";
+    }
+
+    @GetMapping("/checkout/{id}")
+    public String checkoutBasket(@PathVariable Long id, Model model) {
+        Basket basket = basketService.getBasket(id);
+        double total = basket.getTotalPrice();
+        for (BasketItem item : basket.getItems()) {
+            salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
+        }
+        model.addAttribute("successMessage", "Basket checked out successfully! Total: $" + total);
+        basketService.clearBasket(id);
         return "redirect:/products";
     }
 }

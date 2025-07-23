@@ -15,12 +15,16 @@
         <span th:text="${errorMessage}"></span>
     </div>
     <a class="btn btn-primary mb-2" th:href="@{/products/add}">Add Product</a>
+    <div th:if="${basketId != null}" class="mb-3">
+        <a th:href="@{'/products/basket/' + ${basketId}}" class="btn btn-info">View Basket</a>
+    </div>
     <table class="table table-bordered">
         <thead>
         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Price</th>
+            <th>Quantity</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -30,7 +34,14 @@
             <td th:text="${product.name}"></td>
             <td th:text="${product.price}"></td>
             <td>
-                <a th:href="@{'/products/sell/' + ${product.id}}" class="btn btn-sm btn-success">Sell</a>
+                <input type="number" min="1" max="10" value="1" class="form-control form-control-sm" style="width: 100px;">
+            </td>
+            <td>
+                <form th:action="@{/products/add-to-basket/{id}(id=${product.id})}" method="get" class="d-inline">
+                    <input type="hidden" th:name="basketId" th:value="${basketId != null ? basketId : ''}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn btn-sm btn-success">Add to Basket</button>
+                </form>
                 <a th:href="@{'/products/edit/' + ${product.id}}" class="btn btn-sm btn-warning">Edit</a>
                 <a th:href="@{'/products/delete/' + ${product.id}}" class="btn btn-sm btn-danger">Delete</a>
             </td>
