@@ -16,7 +16,7 @@
     </div>
     <a class="btn btn-primary mb-2" th:href="@{/products/add}">Add Product</a>
     <div th:if="${basketId != null}" class="mb-3">
-        <a th:href="@{/products/basket/${basketId}}" class="btn btn-info">View Basket</a>
+        <a th:href="@{/products/basket/{id}(id=${basketId})}" class="btn btn-info">View Basket</a>
     </div>
     <table class="table table-bordered">
         <thead>

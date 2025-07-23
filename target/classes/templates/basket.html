@@ -33,7 +33,7 @@
         <tr th:each="item : ${basket.items}">
             <td th:text="${item.product.name}"></td>
             <td>
-                <form th:action="@{/products/add-to-basket/{productId}(productId=${item.product.id})}?basketId=${basket.id}" method="get" class="d-inline">
+                <form th:action="@{/products/add-to-basket/{id}(id=${item.product.id})}?basketId=${basket.id}" method="get" class="d-inline">
                     <input type="number" name="quantity" th:value="${item.quantity}" min="1" max="10" class="form-control form-control-sm" style="width: 100px;">
                     <button type="submit" class="btn btn-sm btn-primary">Update</button>
                 </form>
@@ -41,7 +41,7 @@
             <td th:text="${item.product.price}"></td>
             <td th:text="${item.totalPrice}"></td>
             <td>
-                <form th:action="@{/products/remove-from-basket/{itemId}(itemId=${item.id})}?basketId=${basket.id}" method="get" class="d-inline">
+                <form th:action="@{/products/remove-from-basket/{id}(id=${item.id})}?basketId=${basket.id}" method="get" class="d-inline">
                     <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                 </form>
             </td>
