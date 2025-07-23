@@ -11,7 +11,7 @@ public class CreditCard {
     private Long id;
 
     @NotNull(message = "Card number is required")
-    @Pattern(regexp = "^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\\d{3})\\d{11})$",
+    @Pattern(regexp = "^(?:4\\d{12}(?:\\d{3})?|5[1-5]\\d{14}|6(?:011|5\\d{2})\\d{12}|3[47]\\d{13}|3(?:0[0-5]|[68]\\d)\\d{11}|(?:2131|1800|35\\d{3})\\d{11})$",
             message = "Invalid credit card number")
     private String cardNumber;
 
@@ -20,12 +20,12 @@ public class CreditCard {
     private String cardHolderName;
 
     @NotNull(message = "Expiration date is required")
-    @Pattern(regexp = "^(0[1-9]|1[0-2])/(\d{2})$",
+    @Pattern(regexp = "^(0[1-9]|1[0-2])/\\\\d{2}$",
             message = "Invalid expiration date format (MM/YY)")
     private String expirationDate;
 
     @NotNull(message = "CVV is required")
-    @Pattern(regexp = "^\d{3}$",
+    @Pattern(regexp = "^\\\\d{3}$",
             message = "Invalid CVV format (3 digits)")
     private String cvv;
 
