@@ -5,7 +5,7 @@ import com.example.demo.entity.BasketItem;
 import com.example.demo.entity.Product;
 import com.example.demo.repository.BasketRepository;
 import com.example.demo.exception.BasketException;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +14,6 @@ public class BasketService {
     private static final String BASKET_NOT_FOUND = "Basket not found";
     private static final String PRODUCT_NOT_FOUND = "Product not found";
 
-    @Autowired
-    private BasketRepository basketRepository;
-
-    @Autowired
-    private ProductService productService;
-    
     private final BasketRepository basketRepository;
     private final ProductService productService;
 
