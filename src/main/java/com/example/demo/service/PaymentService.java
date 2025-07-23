@@ -1,18 +1,30 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Basket;
+import com.example.demo.entity.BasketItem;
 import com.example.demo.entity.CreditCard;
+import com.example.demo.repository.BasketRepository;
 import com.example.demo.repository.CreditCardRepository;
+import com.example.demo.service.BasketService;
+import com.example.demo.service.SalesLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Validated
 public class PaymentService {
     @Autowired
     private CreditCardRepository creditCardRepository;
-
+    
+    @Autowired
+    private BasketService basketService;
+    
+    @Autowired
+    private SalesLogger salesLogger;
+    
     public boolean validateCreditCard(@jakarta.validation.Valid CreditCard creditCard) {
         // Additional validation for card number using Luhn algorithm
         if (!isValidCreditCardNumber(creditCard.getCardNumber())) {
@@ -45,13 +57,26 @@ public class PaymentService {
         return (sum % 10 == 0);
     }
 
-    public void processPayment(CreditCard creditCard, double amount) {
-        // Simulate payment processing
+    @Transactional
+    public void processPayment(@jakarta.validation.Valid CreditCard creditCard, double amount, Long basketId) {
+        // Validate payment amount
         if (amount <= 0) {
             throw new IllegalArgumentException("Payment amount must be greater than 0");
         }
 
-        // Save the credit card information
+        // Validate credit card
+        validateCreditCard(creditCard);
+
+        // Process payment
         creditCardRepository.save(creditCard);
+
+        // Log sales
+        Basket basket = basketService.getBasket(basketId);
+        for (BasketItem item : basket.getItems()) {
+            salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
+        }
+
+        // Clear basket
+        basketService.clearBasket(basketId);
     }
 }

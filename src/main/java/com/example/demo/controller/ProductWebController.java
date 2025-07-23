@@ -159,15 +159,7 @@ public class ProductWebController {
             creditCard.setExpirationDate(expirationDate);
             creditCard.setCvv(cvv);
 
-            paymentService.validateCreditCard(creditCard);
-            paymentService.processPayment(creditCard, totalAmount);
-
-            Basket basket = basketService.getBasket(basketId);
-            for (BasketItem item : basket.getItems()) {
-                salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
-            }
-            basketService.clearBasket(basketId);
-
+            paymentService.processPayment(creditCard, totalAmount, basketId);
             model.addAttribute("successMessage", "Payment successful! Total: $" + totalAmount);
             return "redirect:/products";
         } catch (Exception e) {
