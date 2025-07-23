@@ -28,3 +28,8 @@
 2025-07-23T12:39:07.984+02:00  INFO 6411 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2025-07-23T12:39:20.244+02:00  INFO 6411 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-07-23T12:39:24.774+02:00 ERROR 6411 --- [http-nio-8080-exec-3] c.e.d.controller.GlobalExceptionHandler  : Simulation error occurred: Simulated application error for logging test.
+2025-07-23T12:46:53.476+02:00  INFO 6411 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-23T12:46:53.496+02:00  INFO 6411 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-23T12:46:53.499+02:00  INFO 6411 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-23T12:46:53.502+02:00  INFO 6411 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-23T12:46:53.504+02:00  INFO 6411 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

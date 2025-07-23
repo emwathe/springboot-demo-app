@@ -8,6 +8,12 @@
 <body>
 <div class="container mt-4">
     <h2>Products</h2>
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
     <a class="btn btn-primary mb-2" th:href="@{/products/add}">Add Product</a>
     <table class="table table-bordered">
         <thead>
@@ -24,6 +30,7 @@
             <td th:text="${product.name}"></td>
             <td th:text="${product.price}"></td>
             <td>
+                <a th:href="@{'/products/sell/' + ${product.id}}" class="btn btn-sm btn-success">Sell</a>
                 <a th:href="@{'/products/edit/' + ${product.id}}" class="btn btn-sm btn-warning">Edit</a>
                 <a th:href="@{'/products/delete/' + ${product.id}}" class="btn btn-sm btn-danger">Delete</a>
             </td>
