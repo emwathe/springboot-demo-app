@@ -39,28 +39,41 @@ public class ProductWebController {
     }
 
     @PostMapping
-    public String addProduct(@ModelAttribute Product product) {
+    public String addProduct(@ModelAttribute Product product, @RequestParam(required = false) Long basketId) {
         productService.saveProduct(product);
-        return "redirect:/products";
+        if (basketId != null) {
+            return "redirect:/products?basketId=" + basketId;
+        } else {
+            return "redirect:/products";
+        }
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, @RequestParam(required = false) Long basketId) {
         model.addAttribute("product", productService.getProductById(id).orElse(new Product()));
+        model.addAttribute("basketId", basketId);
         return "product_form";
     }
 
     @PostMapping("/edit/{id}")
-    public String editProduct(@PathVariable Long id, @ModelAttribute Product product) {
+    public String editProduct(@PathVariable Long id, @ModelAttribute Product product, @RequestParam(required = false) Long basketId) {
         product.setId(id);
         productService.saveProduct(product);
-        return "redirect:/products";
+        if (basketId != null) {
+            return "redirect:/products?basketId=" + basketId;
+        } else {
+            return "redirect:/products";
+        }
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(@PathVariable Long id, @RequestParam(required = false) Long basketId) {
         productService.deleteProduct(id);
-        return "redirect:/products";
+        if (basketId != null) {
+            return "redirect:/products?basketId=" + basketId;
+        } else {
+            return "redirect:/products";
+        }
     }
 
     @GetMapping("/add-to-basket/{productId}")
@@ -71,7 +84,7 @@ public class ProductWebController {
         basketService.addItemToBasket(basketId, productId, quantity);
         model.addAttribute("basketId", basketId);
         model.addAttribute("successMessage", "Product added to basket");
-        return "redirect:/products";
+        return "redirect:/products?basketId=" + basketId;
     }
 
     @GetMapping("/remove-from-basket/{itemId}")
@@ -89,10 +102,14 @@ public class ProductWebController {
     }
 
     @GetMapping("/clear-basket/{id}")
-    public String clearBasket(@PathVariable Long id, Model model) {
+    public String clearBasket(@PathVariable Long id, Model model, @RequestParam(required = false) Long basketId) {
         basketService.clearBasket(id);
         model.addAttribute("successMessage", "Basket cleared successfully!");
-        return "redirect:/products";
+        if (basketId != null) {
+            return "redirect:/products?basketId=" + basketId;
+        } else {
+            return "redirect:/products";
+        }
     }
 
     @GetMapping("/checkout/{id}")
