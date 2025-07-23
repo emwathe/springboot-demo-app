@@ -4,6 +4,7 @@ import com.example.demo.entity.Basket;
 import com.example.demo.entity.BasketItem;
 import com.example.demo.entity.Product;
 import com.example.demo.repository.BasketRepository;
+import com.example.demo.exception.BasketException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class BasketService {
     @Transactional
     public Basket addItemToBasket(Long basketId, Long productId, int quantity) {
         Basket basket = basketRepository.findById(basketId)
-                .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
+                .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
 
         Product product = productService.getProductById(productId)
                 .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND));
@@ -48,7 +49,7 @@ public class BasketService {
     @Transactional
     public void removeItemFromBasket(Long basketId, Long itemId) {
         Basket basket = basketRepository.findById(basketId)
-                .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
+                .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
 
         basket.getItems().removeIf(item -> item.getId().equals(itemId));
         basketRepository.save(basket);
@@ -57,13 +58,13 @@ public class BasketService {
     @Transactional(readOnly = true)
     public Basket getBasket(Long basketId) {
         return basketRepository.findById(basketId)
-                .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
+                .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
     }
 
     @Transactional
     public void clearBasket(Long basketId) {
         Basket basket = basketRepository.findById(basketId)
-                .orElseThrow(() -> new RuntimeException(BASKET_NOT_FOUND));
+                .orElseThrow(() -> new BasketException(BASKET_NOT_FOUND));
 
         basket.getItems().clear();
         basketRepository.save(basket);

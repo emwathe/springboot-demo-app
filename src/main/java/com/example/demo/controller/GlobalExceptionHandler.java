@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.BadSqlGrammarException;
+import com.example.demo.exception.BasketException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,6 +23,14 @@ public class GlobalExceptionHandler {
         logger.error("404 error: Page not found - {}", ex.getRequestURL());
         model.addAttribute("errorMessage", "The page you are looking for does not exist.");
         return "error/404";
+    }
+
+    @ExceptionHandler(BasketException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleBasketException(BasketException ex, Model model) {
+        logger.error("Basket error: {}", ex.getMessage());
+        model.addAttribute("errorMessage", "Basket error: " + ex.getMessage());
+        return "error/generic";
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
