@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
+import com.example.demo.exception.SimulationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,10 +23,12 @@ public class GlobalExceptionHandler {
         return "error/404";
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleGenericException(Exception ex, Model model) {
-        logger.error("Application error occurred: {}", ex.getMessage(), ex);
-        model.addAttribute("errorMessage", "An unexpected error occurred.");
+    @ExceptionHandler(SimulationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleSimulationException(SimulationException ex, Model model) {
+        logger.error("Simulation error occurred: {}", ex.getMessage());
+        model.addAttribute("errorMessage", "A simulated error occurred: " + ex.getMessage());
         return "error/generic";
     }
+
 }
