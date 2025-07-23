@@ -19,6 +19,9 @@ public class BasketService {
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private BasketService self;
 
     @Transactional
     public Basket createBasket() {
@@ -33,7 +36,7 @@ public class BasketService {
         Basket basket = basketRepository.findFirstByOrderByCreatedDateDesc();
         if (basket == null) {
             // If none exists, create a new one
-            basket = createBasket();
+            basket = self.createBasket();
         }
         return basket;
     }

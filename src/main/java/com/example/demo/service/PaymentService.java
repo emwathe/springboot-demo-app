@@ -3,13 +3,9 @@ package com.example.demo.service;
 import com.example.demo.entity.Basket;
 import com.example.demo.entity.BasketItem;
 import com.example.demo.entity.CreditCard;
-import com.example.demo.repository.BasketRepository;
 import com.example.demo.repository.CreditCardRepository;
-import com.example.demo.service.BasketService;
-import com.example.demo.service.SalesLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Transactional;
 
