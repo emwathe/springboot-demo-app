@@ -16,6 +16,7 @@ import com.example.demo.exception.BasketException;
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final String GENERIC_ERROR_VIEW = "error/generic";
 
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler {
     public String handleBasketException(BasketException ex, Model model) {
         logger.error("Basket error: {}", ex.getMessage());
         model.addAttribute("errorMessage", "Basket error: " + ex.getMessage());
-        return "error/generic";
+        return GENERIC_ERROR_VIEW;
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
     public String handleDataIntegrityViolation(DataIntegrityViolationException ex, Model model) {
         logger.error("Data integrity violation: {}", ex.getMessage());
         model.addAttribute("errorMessage", "Database error: " + ex.getMessage());
-        return "error/generic";
+        return GENERIC_ERROR_VIEW;
     }
 
     @ExceptionHandler(BadSqlGrammarException.class)
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler {
     public String handleBadSqlGrammar(BadSqlGrammarException ex, Model model) {
         logger.error("SQL error: {}", ex.getMessage());
         model.addAttribute("errorMessage", "Database error: Invalid SQL statement");
-        return "error/generic";
+        return GENERIC_ERROR_VIEW;
     }
 
     @ExceptionHandler(Exception.class)
@@ -54,6 +55,6 @@ public class GlobalExceptionHandler {
     public String handleGenericException(Exception ex, Model model) {
         logger.error("Unexpected error: {}", ex.getMessage(), ex);
         model.addAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
-        return "error/generic";
+        return GENERIC_ERROR_VIEW;
     }
 }
