@@ -4,37 +4,43 @@ import com.example.demo.entity.CreditCard;
 import com.example.demo.service.PaymentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.validation.BindingResult;
 
-@RestController
+@Controller
 @RequestMapping("/api/payment")
 public class PaymentController {
-
+    private static final String REDIRECT_PRODUCTS = "redirect:/products";
+    
     @Autowired
     private PaymentService paymentService;
 
-    @PostMapping(value = "/checkout", consumes = {"application/json", "application/x-www-form-urlencoded"})
-    public ResponseEntity<String> processPayment(
+    @PostMapping("/checkout")
+    public String processPayment(
             @RequestParam Long basketId,
             @RequestParam double totalAmount,
             @Valid @ModelAttribute CreditCard creditCard,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
         
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder("Validation errors:");
             bindingResult.getAllErrors().forEach(error -> {
                 errorMessage.append("\n").append(error.getDefaultMessage());
             });
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage.toString());
+            return REDIRECT_PRODUCTS;
         }
         
         try {
             paymentService.processPayment(creditCard, totalAmount, basketId);
-            return ResponseEntity.ok("Payment processed successfully");
+            redirectAttributes.addFlashAttribute("successMessage", "Payment processed successfully! Your basket has been cleared.");
+            return REDIRECT_PRODUCTS;
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Payment failed: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Payment failed: " + e.getMessage());
+            return REDIRECT_PRODUCTS;
         }
     }
 }
