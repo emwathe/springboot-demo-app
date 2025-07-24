@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -14,11 +15,20 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PostMapping(value = "/checkout")
+    @PostMapping(value = "/checkout", consumes = {"application/json", "application/x-www-form-urlencoded"})
     public ResponseEntity<String> processPayment(
             @RequestParam Long basketId,
             @RequestParam double totalAmount,
-            @Valid @ModelAttribute CreditCard creditCard) {
+            @Valid @ModelAttribute CreditCard creditCard,
+            BindingResult bindingResult) {
+        
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation errors:");
+            bindingResult.getAllErrors().forEach(error -> {
+                errorMessage.append("\n").append(error.getDefaultMessage());
+            });
+            return ResponseEntity.badRequest().body(errorMessage.toString());
+        }
         
         try {
             paymentService.processPayment(creditCard, totalAmount, basketId);
