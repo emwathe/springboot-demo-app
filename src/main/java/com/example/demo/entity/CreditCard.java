@@ -21,12 +21,12 @@ public class CreditCard {
     private String cardHolderName;
 
     @NotNull(message = "Expiration date is required")
-    @Pattern(regexp = "^(0[1-9]|1[0-2])/\\\\d{2}$",
+    @Pattern(regexp = "^(0[1-9]|1[0-2])/\\d{2}$",
             message = "Invalid expiration date format (MM/YY)")
     private String expirationDate;
 
     @NotNull(message = "CVV is required")
-    @Pattern(regexp = "^\\\\d{3}$",
+    @Pattern(regexp = "^\\d{3}$",
             message = "Invalid CVV format (3 digits)")
     private String cvv;
 

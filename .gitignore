@@ -1,0 +1,43 @@
+# Logs
+logs/
+app.log
+app-errors.log
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Build files
+*.class
+target/
+
+# Maven
+.mvn/
+!mvnw
+!mvnw.cmd
+!mvn-wrapper.jar
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java
+*.log
+*.pid
+
+# H2 Database
+*.mv.db
+*.trace.db
+
+# Spring Boot
+.config/
+
+# Environment files
+.env
+.env.*
+
+# Local configuration files
+application-local.properties
+application-local.yml
