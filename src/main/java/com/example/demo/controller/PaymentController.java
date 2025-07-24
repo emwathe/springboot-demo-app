@@ -14,11 +14,11 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PostMapping("/checkout")
+    @PostMapping(value = "/checkout")
     public ResponseEntity<String> processPayment(
             @RequestParam Long basketId,
             @RequestParam double totalAmount,
-            @Valid @RequestBody CreditCard creditCard) {
+            @Valid @ModelAttribute CreditCard creditCard) {
         
         try {
             paymentService.processPayment(creditCard, totalAmount, basketId);
