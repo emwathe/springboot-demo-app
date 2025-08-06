@@ -32,6 +32,10 @@ public class ProductWebController {
     @GetMapping
     public String listProducts(@RequestParam(required = false) Long basketId, Model model) {
         model.addAttribute("products", productService.getAllProducts());
+        if (basketId == null) {
+            Basket basket = basketService.getOrCreateBasket();
+            basketId = basket.getId();
+        }
         model.addAttribute("basketId", basketId);
         return "products";
     }

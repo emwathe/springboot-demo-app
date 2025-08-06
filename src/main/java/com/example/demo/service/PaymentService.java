@@ -4,6 +4,8 @@ import com.example.demo.entity.Basket;
 import com.example.demo.entity.BasketItem;
 import com.example.demo.entity.CreditCard;
 import com.example.demo.repository.CreditCardRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Validated
 public class PaymentService {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
+
+    private String maskCardNumber(String cardNumber) {
+        if (cardNumber == null || cardNumber.length() < 4) {
+            return "****";
+        }
+        return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
+    }
     @Autowired
     private CreditCardRepository creditCardRepository;
     
@@ -55,24 +65,36 @@ public class PaymentService {
 
     @Transactional
     public void processPayment(@jakarta.validation.Valid CreditCard creditCard, double amount, Long basketId) {
-        // Validate payment amount
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Payment amount must be greater than 0");
+        try {
+            // Validate payment amount
+            if (amount <= 0) {
+                throw new PaymentException("Payment amount must be greater than 0", 
+                    maskCardNumber(creditCard.getCardNumber()), amount, basketId.toString());
+            }
+
+            // Validate credit card
+            validateCreditCard(creditCard);
+
+            // Process payment
+            creditCardRepository.save(creditCard);
+
+            // Get basket and log checkout
+            Basket basket = basketService.getBasket(basketId);
+            salesLogger.logCheckout(maskCardNumber(creditCard.getCardNumber()), amount, basket.getItems());
+
+            // Clear basket - this will now delete the basket
+            basketService.clearBasket(basketId);
+        } catch (PaymentException e) {
+            logger.error(e.getFormattedMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("PAYMENT FAILURE {} | Card: {} | Amount: ${} | Basket: {} | Error: {}",
+                java.time.LocalDateTime.now(),
+                maskCardNumber(creditCard.getCardNumber()),
+                amount,
+                basketId,
+                e.getMessage());
+            throw new RuntimeException("Payment failed: " + e.getMessage(), e);
         }
-
-        // Validate credit card
-        validateCreditCard(creditCard);
-
-        // Process payment
-        creditCardRepository.save(creditCard);
-
-        // Get basket and log sales
-        Basket basket = basketService.getBasket(basketId);
-        for (BasketItem item : basket.getItems()) {
-            salesLogger.logSale(item.getProduct().getId(), item.getProduct().getName(), item.getTotalPrice());
-        }
-
-        // Clear basket - this will now delete the basket
-        basketService.clearBasket(basketId);
     }
 }
