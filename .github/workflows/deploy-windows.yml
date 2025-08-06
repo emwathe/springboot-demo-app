@@ -1,0 +1,43 @@
+name: Deploy to Windows Server
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Build with Maven
+      run: mvn clean package -DskipTests
+
+    - name: Deploy to Windows Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.WINDOWS_SERVER_HOST }}
+        username: ${{ secrets.WINDOWS_SERVER_USER }}
+        key: ${{ secrets.WINDOWS_SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          # Stop existing service if running
+          taskkill /F /IM java.exe 2>nul
+          
+          # Copy new JAR file
+          copy /Y "${{ github.workspace }}/target/springboot-demo-app-${{ env.PROJECT_VERSION }}.jar" "C:\apps\springboot-demo-app\"
+          
+          # Start the application
+          start java -jar "C:\apps\springboot-demo-app\springboot-demo-app-${{ env.PROJECT_VERSION }}.jar" --spring.profiles.active=prod
+
+    env:
+      PROJECT_VERSION: ${{ github.event.ref == 'refs/heads/main' && '1.0.1' || github.sha }}
