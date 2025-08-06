@@ -1,0 +1,100 @@
+# .github/workflows/deploy.yml
+
+name: Build and Deploy JAR to Windows Server
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push events but only for the main branch.
+  push:
+    branches: [ main ]
+
+jobs:
+  # This job builds the application
+  build:
+    runs-on: ubuntu-latest # Use a standard Linux runner for building
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Build with Maven
+      # This command builds the project and creates the JAR file.
+      # The "-B" flag runs it in batch mode (non-interactive).
+      run: mvn -B package --file pom.xml
+
+    - name: Upload JAR artifact
+      # This step uploads the JAR file to be used in the deploy job.
+      # The path should point to your generated JAR file.
+      uses: actions/upload-artifact@v4
+      with:
+        name: my-app-jar
+        path: target/*.jar # Adjust this path if your JAR is located elsewhere
+
+  # This job deploys the application
+  deploy:
+    # The deploy job depends on the build job to be successful.
+    needs: build
+    runs-on: ubuntu-latest # The runner for deployment orchestration
+
+    steps:
+    - name: Download JAR artifact from build job
+      uses: actions/download-artifact@v2
+      with:
+        name: my-app-jar
+        # The artifact is downloaded to the runner's workspace.
+
+    - name: Deploy JAR to Windows Server
+      # This step securely copies the JAR file to the remote server.
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        source: "*.jar"
+        # The target path on your Windows Server.
+        # Make sure the user has write permissions to this directory.
+        target: "C:/apps/my-app"
+
+    - name: Execute remote commands to run JAR
+      # This step connects via SSH and runs commands on the server.
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        script: |
+          # Navigate to the app directory
+          cd C:/apps/my-app
+
+          # Find and stop the currently running process (if any)
+          # This command finds the process using port 8080 and kills it.
+          # Adjust the port number as needed.
+          $process = Get-Process -Id (Get-NetTCPConnection -LocalPort 8080).OwningProcess -ErrorAction SilentlyContinue
+          if ($process) {
+            Stop-Process -Id $process.Id -Force
+            Write-Host "Stopped existing process with ID $($process.Id)."
+          } else {
+            Write-Host "No existing process found on port 8080."
+          }
+
+          # Get the name of the new JAR file
+          $jarFile = Get-ChildItem -Filter *.jar | Select-Object -First 1
+
+          # Start the new JAR file in the background
+          # We use Start-Process to run it detached from the SSH session.
+          if ($jarFile) {
+            Start-Process java -ArgumentList "-jar", $jarFile.Name -NoNewWindow
+            Write-Host "Started new application: $($jarFile.Name)"
+          } else {
+            Write-Host "Error: No JAR file found to start."
+            exit 1
+          }
