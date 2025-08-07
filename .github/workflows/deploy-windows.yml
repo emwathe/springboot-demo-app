@@ -16,7 +16,7 @@ jobs:
 
       - name: check firewall
         run: |
-          sudo ufw status:
+          sudo ufw status
           sudo iptables -S | grep 22
       - name: Test SSH port with netcat
         run: nc -zv 3.79.194.242 22 || echo "Port 22 unreachable"
