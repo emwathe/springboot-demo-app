@@ -13,6 +13,11 @@ jobs:
         run: curl https://ifconfig.me
       - name: Ping host
         run: ping -c 4 3.79.194.242 || echo "Ping failed"
+
+      - name: check firewall
+        run: |
+          sudo ufw status:
+          sudo iptables -S | grep 22
       - name: Test SSH port with netcat
         run: nc -zv 3.79.194.242 22 || echo "Port 22 unreachable"
       - name: Debug traceroute
