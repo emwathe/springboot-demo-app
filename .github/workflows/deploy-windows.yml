@@ -6,6 +6,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  debug-ssh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show public IP
+        run: curl https://ifconfig.me
+
+      - name: Test SSH port with netcat
+        run: nc -zv 3.79.194.242 22 || echo "Port 22 unreachable"
+
+      - name: Debug traceroute
+        run: |
+          sudo apt-get update && sudo apt-get install -y traceroute
+          traceroute 3.79.194.242
   deploy:
     runs-on: ubuntu-latest
     
