@@ -18,7 +18,7 @@ jobs:
       - name: Debug traceroute
         run: |
           sudo apt-get update && sudo apt-get install -y traceroute
-          traceroute 3.79.194.242
+          traceroute -I 3.79.194.242
   deploy:
     runs-on: ubuntu-latest
     
