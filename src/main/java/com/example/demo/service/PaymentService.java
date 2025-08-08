@@ -37,7 +37,14 @@ public class PaymentService {
             throw new IllegalArgumentException("Invalid credit card number format");
         }
 
-        // Allow credit cards to be used multiple times
+        // Test card number that should always be declined
+        if (creditCard.getCardNumber().equals("5454545454545454")) {
+            throw new PaymentException("Payment declined: Invalid card number", 
+                maskCardNumber(creditCard.getCardNumber()), 
+                0.0, // Amount not relevant for this error
+                "N/A"); // Basket ID not relevant for this error
+        }
+
         return true;
     }
 
