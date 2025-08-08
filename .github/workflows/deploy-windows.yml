@@ -14,7 +14,7 @@ jobs:
       - name: Ping host
         run: ping -c 4 3.79.194.242 || echo "Ping failed"
       - name: Test SSH port with netcat
-        run: nc -zv 3.79.194.242 22 || echo "Port 22 unreachable"
+        run: nc -zv 3.79.194.242  || echo "Port 22 unreachable"
       - name: Debug traceroute
         run: |
           sudo apt-get update && sudo apt-get install -y traceroute
@@ -41,7 +41,7 @@ jobs:
         host: ${{ secrets.WINDOWS_SERVER_HOST }}
         username: ${{ secrets.WINDOWS_SERVER_USER }}
         key: ${{ secrets.WINDOWS_SERVER_SSH_KEY }}
-        port: 22
+        #port: 
         script: |
           # Stop existing service if running
           taskkill /F /IM java.exe 2>nul
