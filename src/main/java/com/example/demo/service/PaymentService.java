@@ -37,12 +37,7 @@ public class PaymentService {
             throw new IllegalArgumentException("Invalid credit card number format");
         }
 
-        // Check if card exists in database
-        CreditCard existingCard = creditCardRepository.findByCardNumber(creditCard.getCardNumber());
-        if (existingCard != null) {
-            throw new IllegalArgumentException("This credit card has already been used");
-        }
-
+        // Allow credit cards to be used multiple times
         return true;
     }
 
